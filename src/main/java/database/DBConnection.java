@@ -22,11 +22,11 @@ public class DBConnection {
 
         // Mapping classes
         this.configuration = new Configuration()
-                .addAnnotatedClass(VariousObject.class)
+                .addAnnotatedClass(TransmissionFrame.class)
                 .configure();
 
         Metadata metadata = new MetadataSources(standardRegistry)
-                .addAnnotatedClass(VariousObject.class)
+                .addAnnotatedClass(TransmissionFrame.class)
                 .getMetadataBuilder()
                 .applyImplicitNamingStrategy(ImplicitNamingStrategyJpaCompliantImpl.INSTANCE)
                 .build();
