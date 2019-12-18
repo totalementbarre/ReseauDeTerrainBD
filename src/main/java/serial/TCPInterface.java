@@ -3,7 +3,8 @@ package serial;
 import gnu.io.CommPort;
 import gnu.io.CommPortIdentifier;
 import gnu.io.SerialPort;
-import serial.Runnable.writerTCP;
+import serial.Runnable.ListenerTCP;
+import serial.Runnable.WriterTCP;
 
 import java.io.*;
 import java.net.Socket;
@@ -15,18 +16,27 @@ public class TCPInterface {
     private PrintWriter outputStream;
     private InputStreamReader inputStream;
     private boolean isConnected;
+    private List<BufferedReader> inputStreamsFromSerials;
+    private List<PrintWriter> outputStreamsToSerials;
+    private WriterTCP writerTCP;
+    private ListenerTCP listenerTCP;
 
     public TCPInterface() {
+        this.inputStreamsFromSerials = new ArrayList<BufferedReader>();
+        this.outputStreamsToSerials = new ArrayList<PrintWriter>();
         this.isConnected = false;
         this.socket = null;
+        this.writerTCP = null;
+        this.listenerTCP = null;
     }
 
     /**
      * Open a socket to start communication with the server
+     *
      * @param address
      * @param port
      */
-    public void establishServerCommunications(String address, int port){
+    public void establishServerCommunications(String address, int port) {
         try {
             socket = new Socket(address, port);
             System.out.println("Connected");
@@ -34,7 +44,7 @@ public class TCPInterface {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        if(socket != null){
+        if (socket != null) {
             try {
                 this.outputStream = new PrintWriter(this.socket.getOutputStream());
                 this.inputStream = new InputStreamReader(socket.getInputStream());
@@ -42,7 +52,7 @@ public class TCPInterface {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }else{
+        } else {
             System.out.println("Failed to open socket");
         }
 
@@ -52,33 +62,43 @@ public class TCPInterface {
      * Open all the ports of the different components
      * Start a thread and transmit their content to the server
      * It's only a copy for now
+     *
      * @param portNames
      */
     public void connectSensorsToServer(List<String> portNames) {
-        List<BufferedReader> bufferedReaders = new ArrayList<BufferedReader>();
+        List<BufferedReader> inputStreamsFromSerials = new ArrayList<BufferedReader>();
+        List<PrintWriter> outputStreamsToSerials = new ArrayList<PrintWriter>();
         for (String portName : portNames) {
             SerialPort serialPort = null;
             try {
-                serialPort = connect(portName);
+                serialPort = connectSerialPort(portName);
             } catch (Exception e) {
                 e.printStackTrace();
                 System.err.println("Can't open port : " + portName);
             }
             if (serialPort != null) {
                 try {
-                    bufferedReaders.add(
+                    inputStreamsFromSerials.add(
                             new BufferedReader(new InputStreamReader(serialPort.getInputStream())));
-                    // TODO ADD LIST OF READER TO AND START THE READING THREAD
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    outputStreamsToSerials.add(new PrintWriter(serialPort.getOutputStream()));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }
+        this.inputStreamsFromSerials = inputStreamsFromSerials;
+        this.outputStreamsToSerials = outputStreamsToSerials;
+        (new Thread(new WriterTCP(this.outputStream, inputStreamsFromSerials))).start();
+        (new Thread(new ListenerTCP(this.inputStream, outputStreamsToSerials, this))).start();
 
-        (new Thread(new writerTCP(this.outputStream, bufferedReaders))).start();
+
     }
 
-    private SerialPort connect(String portName) throws Exception {
+    private SerialPort connectSerialPort(String portName) throws Exception {
         CommPortIdentifier portIdentifier = CommPortIdentifier
                 .getPortIdentifier(portName);
         if (portIdentifier.isCurrentlyOwned()) {
@@ -103,7 +123,16 @@ public class TCPInterface {
         return null;
     }
 
+    /**
+     * End properly all threads and close all streams
+     *
+     * @return
+     * @throws IOException
+     */
     public Boolean disconnect() throws IOException {
+        this.writerTCP.setShouldWrite(false);
+        this.listenerTCP.setShouldListen(false);
+        // TODO maybe add a while here to wait for the thread to end properly by adding a done boolean to the threads
         this.outputStream.close();
         this.inputStream.close();
         this.socket.close();
