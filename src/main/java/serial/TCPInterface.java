@@ -9,9 +9,11 @@ import serial.Runnable.WriterTCP;
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class TCPInterface {
+    public static final String SOURCE_TAG = "local";
     private Socket socket;
     private PrintWriter outputStream;
     private InputStreamReader inputStream;
@@ -92,6 +94,9 @@ public class TCPInterface {
         }
         this.inputStreamsFromSerials = inputStreamsFromSerials;
         this.outputStreamsToSerials = outputStreamsToSerials;
+        this.outputStream.println("," + SOURCE_TAG + "," + (new Date()).getTime() / 1000 + ",AUTH,,," + SOURCE_TAG);
+        this.outputStream.flush();
+
         (new Thread(new WriterTCP(this.outputStream, inputStreamsFromSerials))).start();
         (new Thread(new ListenerTCP(this.inputStream, outputStreamsToSerials, this))).start();
 

@@ -40,6 +40,11 @@ public class ListenerTCP implements Runnable {
                     tcpInterface.disconnect();
                 } else {
                     // TODO change here, only send data to destination id serial, its a broadcast for now
+
+                    // ajout d'une virgule suplémentaire à la fin de la trame
+                    buf[numberOfRealChar] = ',';
+                    numberOfRealChar++;
+                    // fin de modif
                     shortenedBuffer = copyOf(buf, numberOfRealChar);
                     System.out.println("ListenerTCP read : " + String.valueOf(shortenedBuffer));
                     for (int i = 0; i < outputStreamsToSerials.size(); i++) {
