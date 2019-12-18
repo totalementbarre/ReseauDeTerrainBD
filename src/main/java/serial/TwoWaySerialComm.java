@@ -4,9 +4,8 @@ import gnu.io.CommPort;
 import gnu.io.CommPortIdentifier;
 import gnu.io.SerialPort;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import javax.swing.plaf.synth.SynthStyle;
+import java.io.*;
 
 public class TwoWaySerialComm {
 
@@ -41,21 +40,23 @@ public class TwoWaySerialComm {
     public static class SerialReader implements Runnable {
 
         InputStream in;
+        BufferedReader bufferedReader;
 
         public SerialReader(InputStream in) {
             this.in = in;
+            this.bufferedReader = new BufferedReader(new InputStreamReader(in));
         }
 
         public void run() {
-            byte[] buffer = new byte[1024];
-            int len = -1;
             try {
-                while ((len = this.in.read(buffer)) > -1) {
-                    System.out.print(new String(buffer, 0, len));
-
+                while(true){
+                    String line = bufferedReader.readLine();
+                    System.out.println(line);
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+//                e.printStackTrace();
+                // TODO INSERT HERE CODE TO HANDLE DISCONNECTION
+                System.err.println("Connection lost with port com");
             }
         }
     }
