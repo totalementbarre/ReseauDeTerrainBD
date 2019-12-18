@@ -37,13 +37,14 @@ public class ListenerTCP implements Runnable {
                 char[] shortenedBuffer;
                 // Connection lost from server
                 if (numberOfRealChar == -1) {
+                    System.out.println("DISCONNECTION FROM SERVER");
                     tcpInterface.disconnect();
                 } else {
                     // TODO change here, only send data to destination id serial, its a broadcast for now
 
                     // ajout d'une virgule suplémentaire à la fin de la trame
-                    buf[numberOfRealChar] = ',';
-                    numberOfRealChar++;
+                    //                    buf[numberOfRealChar] = ',';
+                    //                   numberOfRealChar++;
                     // fin de modif
                     shortenedBuffer = copyOf(buf, numberOfRealChar);
                     System.out.println("ListenerTCP read : " + String.valueOf(shortenedBuffer));

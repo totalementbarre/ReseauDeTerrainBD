@@ -51,6 +51,8 @@ public class TCPInterface {
                 this.outputStream = new PrintWriter(this.socket.getOutputStream());
                 this.inputStream = new InputStreamReader(socket.getInputStream());
                 this.isConnected = true;
+                this.outputStream.println("," + SOURCE_TAG + "," + (new Date()).getTime() / 1000 + ",AUTH,,," + SOURCE_TAG);
+                this.outputStream.flush();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -94,8 +96,6 @@ public class TCPInterface {
         }
         this.inputStreamsFromSerials = inputStreamsFromSerials;
         this.outputStreamsToSerials = outputStreamsToSerials;
-        this.outputStream.println("," + SOURCE_TAG + "," + (new Date()).getTime() / 1000 + ",AUTH,,," + SOURCE_TAG);
-        this.outputStream.flush();
 
         (new Thread(new WriterTCP(this.outputStream, inputStreamsFromSerials))).start();
         (new Thread(new ListenerTCP(this.inputStream, outputStreamsToSerials, this))).start();
@@ -114,7 +114,7 @@ public class TCPInterface {
 
             if (commPort instanceof SerialPort) {
                 SerialPort serialPort = (SerialPort) commPort;
-                serialPort.setSerialPortParams(9600,
+                serialPort.setSerialPortParams(57600,
                         SerialPort.DATABITS_8,
                         SerialPort.STOPBITS_1,
                         SerialPort.PARITY_NONE);
