@@ -20,7 +20,7 @@ public class TwoWaySerialComm {
 
             if (commPort instanceof SerialPort) {
                 SerialPort serialPort = (SerialPort) commPort;
-                serialPort.setSerialPortParams(9600,
+                serialPort.setSerialPortParams(57600,
                         SerialPort.DATABITS_8,
                         SerialPort.STOPBITS_1,
                         SerialPort.PARITY_NONE);
