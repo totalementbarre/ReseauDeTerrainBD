@@ -3,6 +3,7 @@ package serial.Runnable;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Date;
 import java.util.List;
 
 public class WriterTCP implements Runnable {
@@ -33,6 +34,8 @@ public class WriterTCP implements Runnable {
 //                e.printStackTrace();
                     // TODO INSERT HERE CODE TO HANDLE DISCONNECTION
                     System.err.println("Connection lost with port com, index : " + i);
+                    this.outputStreamFromServer.println("OTHERS,local," + (new Date()).getTime() / 1000 + ",DISC,7," + i + ",");
+                    this.outputStreamFromServer.flush();
                 }
             }
         }
