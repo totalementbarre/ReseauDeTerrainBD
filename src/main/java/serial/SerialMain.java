@@ -5,9 +5,8 @@ import java.util.List;
 
 public class SerialMain {
     public static void main(String[] args) {
-        String serialName = "/dev/ttyACM0";
 
-        System.setProperty("gnu.io.rxtx.SerialPorts", serialName);
+
 
 
 //        TwoWaySerialComm twoWaySerialComm = new TwoWaySerialComm();
@@ -18,7 +17,16 @@ public class SerialMain {
 //        }
 
         List<String> portNames = new ArrayList<String>();
-        portNames.add(serialName);
+        portNames.add("/dev/ttyACM0");
+        //portNames.add("/dev/ttyACM1");
+        //portNames.add("/dev/ttyACM2");
+        //portNames.add("/dev/ttyUSB0");
+
+        for (String serialName :
+                portNames) {
+            System.setProperty("gnu.io.rxtx.SerialPorts", serialName);
+
+        }
         TCPInterface tcpInterface = new TCPInterface();
         try {
             tcpInterface.establishServerCommunications("rt.totalementbarre.fr", 5000);

@@ -97,7 +97,7 @@ public class TCPInterface {
         this.inputStreamsFromSerials = inputStreamsFromSerials;
         this.outputStreamsToSerials = outputStreamsToSerials;
 
-        (new Thread(new WriterTCP(this.outputStream, inputStreamsFromSerials))).start();
+        (new Thread(new WriterTCP(this.outputStream, inputStreamsFromSerials, this))).start();
         (new Thread(new ListenerTCP(this.inputStream, outputStreamsToSerials, this))).start();
 
 
@@ -142,6 +142,7 @@ public class TCPInterface {
         this.inputStream.close();
         this.socket.close();
         this.isConnected = false;
+        System.exit(0);
         return true;
     }
 
