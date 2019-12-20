@@ -27,15 +27,27 @@ public class TransmissionFrame {
         this.sensorId = sensorId;
         this.value = value;
     }
-    public TransmissionFrame(String frame){
+
+    public TransmissionFrame(String frame) {
         String[] splicedStrings = frame.split(",");
-        this.destination = splicedStrings[0];
-        this.source = splicedStrings[1];
-        this.timeStamp = Long.parseLong(splicedStrings[2]);
-        this.type = splicedStrings[3];
-        this.priority = Integer.parseInt(splicedStrings[4]);
-        this.sensorId = splicedStrings[5];
-        this.sensorId = splicedStrings[6];
+        if (splicedStrings.length != 7) {
+            System.err.println("Wrong frame size : " + frame);
+            this.destination = "";
+            this.source = "";
+            this.timeStamp = -1;
+            this.type = "";
+            this.priority = 0;
+            this.sensorId = "";
+            this.value = "";
+        } else {
+            this.destination = splicedStrings[0];
+            this.source = splicedStrings[1];
+            this.timeStamp = Long.parseLong(splicedStrings[2]);
+            this.type = splicedStrings[3];
+            this.priority = Integer.parseInt(splicedStrings[4]);
+            this.sensorId = splicedStrings[5];
+            this.value = splicedStrings[6];
+        }
 
 
     }
