@@ -60,31 +60,6 @@
             <version>3.2.0-0</version>
         </dependency>
 
-
-        <dependency>
-            <groupId>com.github.sarxos</groupId>
-            <artifactId>webcam-capture</artifactId>
-            <version>0.3.12</version>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/com.github.sarxos/webcam-capture-driver-ipcam -->
-        <dependency>
-            <groupId>com.github.sarxos</groupId>
-            <artifactId>webcam-capture-driver-ipcam</artifactId>
-            <version>0.3.4</version>
-        </dependency>
-
-
-        <dependency>
-            <groupId>com.github.sarxos</groupId>
-            <artifactId>webcam-capture-driver-ipcam</artifactId>
-            <version>0.3.4</version>
-        </dependency>
-        <dependency>
-            <groupId>org.bytedeco</groupId>
-            <artifactId>javacv-platform</artifactId>
-            <version>1.5.2</version>
-        </dependency>
     </dependencies>
 
     <build>
