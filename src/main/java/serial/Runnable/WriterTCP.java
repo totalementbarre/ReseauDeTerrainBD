@@ -1,5 +1,9 @@
 package serial.Runnable;
 
+import database.DBConnection;
+import database.TransmissionFrame;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 import serial.TCPInterface;
 
 import java.io.BufferedReader;
@@ -12,12 +16,14 @@ public class WriterTCP implements Runnable {
     private TCPInterface tcpInterface;
     private PrintWriter outputStreamFromServer;
     private List<BufferedReader> inputsBufferedReaders;
+    private DBConnection dbConnection;
     private boolean shouldWrite;
 
-    public WriterTCP(PrintWriter outputStreamFromServer, List<BufferedReader> inputsBufferedReaders, TCPInterface tcpInterface) {
+    public WriterTCP(PrintWriter outputStreamFromServer, List<BufferedReader> inputsBufferedReaders, TCPInterface tcpInterface, DBConnection dbConnection) {
         this.outputStreamFromServer = outputStreamFromServer;
         this.inputsBufferedReaders = inputsBufferedReaders;
         this.tcpInterface = tcpInterface;
+        this.dbConnection = dbConnection;
         this.shouldWrite = true;
     }
 
@@ -39,6 +45,12 @@ public class WriterTCP implements Runnable {
                 try {
                     String messageToSend = inputsBufferedReaders.get(i).readLine();
                     System.out.println(messageToSend);
+                    Session session = dbConnection.getSessionFactory().getCurrentSession();
+                    Transaction transaction = session.beginTransaction();
+                    TransmissionFrame transmissionFrame = new TransmissionFrame(messageToSend);
+                    session.persist(transmissionFrame);
+                    transaction.commit();
+                    session.close();
                     this.outputStreamFromServer.println(messageToSend);
                     this.outputStreamFromServer.flush();
                 } catch (IOException e) {

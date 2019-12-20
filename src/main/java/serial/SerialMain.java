@@ -6,16 +6,6 @@ import java.util.List;
 public class SerialMain {
     public static void main(String[] args) {
 
-
-
-
-//        TwoWaySerialComm twoWaySerialComm = new TwoWaySerialComm();
-//        try {
-//            twoWaySerialComm.connect( serialName);
-//        } catch( Exception e ) {
-//            e.printStackTrace();
-//        }
-
         List<String> portNames = new ArrayList<String>();
         portNames.add("/dev/ttyACM0");
         //portNames.add("/dev/ttyACM1");

@@ -1,5 +1,6 @@
 package serial;
 
+import database.DBConnection;
 import gnu.io.CommPort;
 import gnu.io.CommPortIdentifier;
 import gnu.io.SerialPort;
@@ -22,10 +23,12 @@ public class TCPInterface {
     private List<PrintWriter> outputStreamsToSerials;
     private WriterTCP writerTCP;
     private ListenerTCP listenerTCP;
+    private DBConnection dbConnection;
 
     public TCPInterface() {
         this.inputStreamsFromSerials = new ArrayList<BufferedReader>();
         this.outputStreamsToSerials = new ArrayList<PrintWriter>();
+        this.dbConnection = new DBConnection();
         this.isConnected = false;
         this.socket = null;
         this.writerTCP = null;
@@ -97,7 +100,7 @@ public class TCPInterface {
         this.inputStreamsFromSerials = inputStreamsFromSerials;
         this.outputStreamsToSerials = outputStreamsToSerials;
 
-        (new Thread(new WriterTCP(this.outputStream, inputStreamsFromSerials, this))).start();
+        (new Thread(new WriterTCP(this.outputStream, inputStreamsFromSerials, this, this.dbConnection))).start();
         (new Thread(new ListenerTCP(this.inputStream, outputStreamsToSerials, this))).start();
 
 

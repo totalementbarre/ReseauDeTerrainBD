@@ -27,6 +27,18 @@ public class TransmissionFrame {
         this.sensorId = sensorId;
         this.value = value;
     }
+    public TransmissionFrame(String frame){
+        String[] splicedStrings = frame.split(",");
+        this.destination = splicedStrings[0];
+        this.source = splicedStrings[1];
+        this.timeStamp = Long.parseLong(splicedStrings[2]);
+        this.type = splicedStrings[3];
+        this.priority = Integer.parseInt(splicedStrings[4]);
+        this.sensorId = splicedStrings[5];
+        this.sensorId = splicedStrings[6];
+
+
+    }
 
     public String getDestination() {
         return destination;
